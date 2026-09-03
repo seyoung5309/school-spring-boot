@@ -1,18 +1,16 @@
 package com.mirim.board;
 
-import ch.qos.logback.core.joran.action.ResourceAction;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 @RestController
 @RequestMapping("/posts")
 public class PostController {
+    private SmsNotifier notifier = new SmsNotifier();
 
     // 1. 5번 게시물, 10번 게시물을 어떻게 읽을까?
     // 2. 검색어처럼 있어도 되고 없어도 되는 값
@@ -40,10 +38,10 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("존재하지 않는 게시글입니다.");
 //            ResponseEntity.notFound();
-        } else if (id <= 0){
+        } else if (id <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("잘못된 요청입니다.");
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(id + "번 게시글입니다.");
         }
@@ -62,14 +60,55 @@ public class PostController {
         //Long user_id = (Long) request.get("user_id");
 
         // DB 로직
+
         Map<String, Object> response = new HashMap<>();
         response.put("title", title);
         response.put("content", content);
         response.put("message", "게시글이 등록되었습니다.");
+
+        // 발송
+        notifier.send(title + "게시글이 등록되었습니다.");
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);
 
         //return "[" + title + "] 게시글이 등록되었습니다. 내용 : " + content;
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePost(@RequestBody Map<String, Object> request, @PathVariable int id) {
+        String title = (String) request.get("title");
+        String content = (String) request.get("content");
+        //Long user_id = (Long) request.get("user_id");
+
+        // DB 로직
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", id);
+        response.put("title", title);
+        response.put("content", content);
+        response.put("message", "게시글이 수정되었습니다.");
+
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
+
+        //return "[" + title + "] 게시글이 등록되었습니다. 내용 : " + content;
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable long id) {
+        Map<String, Object> response = new HashMap<>();
+        if (id <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("게시글 번호는 1 이상이어야 합니다");
+        }
+        if (id > 10) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 게시물입니다.");
+        }
+
+        // db에서 삭제한다고 치기
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }
