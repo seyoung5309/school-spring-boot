@@ -10,7 +10,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/posts")
 public class PostController {
-    private SmsNotifier notifier = new SmsNotifier();
+    private final Notifier notifier;
+
+    public PostController(Notifier notifier) {
+        this.notifier = notifier;
+    }
 
     // 1. 5번 게시물, 10번 게시물을 어떻게 읽을까?
     // 2. 검색어처럼 있어도 되고 없어도 되는 값
