@@ -1,2 +1,5 @@
 my:
   message: this is hello message.
+#logging:
+#  level:
+#    org.springframework.web: DEBUG

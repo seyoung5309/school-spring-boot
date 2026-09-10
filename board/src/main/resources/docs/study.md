@@ -141,3 +141,31 @@ Spring Bean은 Singleton!!
 
 # 싱글톤
 - 스프링 빈의 기본 스코프. 컨테이너 안에서 객체가 하나만 만들어져서 계속 재사용됨. 
+
+# DispatcherServlet
+클라이언트로 요청이 들어오면 이 요청을 누가 처리해야할지 교통 정리를 해준다. 
+목적지: 컨트롤러
+
+# HttpMessageConverter
+- DispatcherServlet이 컨트롤러가 리턴한 값을 받으면
+- 그 값의 타임이랑, 요청 정보를 보고 알맞게 변환해준다. 
+- String -> text / Map -> JSON 
+
+---
+
+# 전체 흐름 정리
+
+- 메서드가 ResponseEntity를 리턴하면
+- 그 값이 DispatcherServlet으로 돌아가고 
+- @ResponseBody 어노테이션 덕분에 view를 찾지 않고 
+- HttpMessageConverter가 그 값을 json으로 바꿔서 
+- Response Body에 담는다. 
+
+브라우저 -> 내장 톰캣 -> 교통 정리(dispatcherServlet) -> Controller.hello() -> 형식 변환 -> 응답
+
+브라우저/postman -> 내장 톰캣 -> dispatcherServlet 
+-> HandlerMapping이 만든 지도에서 메서드 찾기 
+-> Singleton Controller Bean Method Execute (싱글톤 컨트롤러 빈의 메서드 실행)
+-> 메서드의 리턴 값이 HttpMessageConverter를 통해 JSON으로 변환됨
+-> 내장 Tomcat (톰캣)
+-> Response (응답)

@@ -27,6 +27,7 @@ public class PostController {
 
     @GetMapping
     public String getPosts(@RequestParam(required = false) String keyword) {
+        System.out.println("이 요청을 처리하는 PostController: " + System.identityHashCode(this));
         //return "게시글의 목록입니다.";
         if (keyword != null) {
             return keyword + "(으)로 검색된 결과입니다.";
