@@ -98,3 +98,46 @@ PostController가
 4. 만든 객체를 컨테이너에 보관한다. 
    - 이 컨테이너를 스프링 컨테이너(ApplicationContext)라고 한다. 
 5. 다른 곳에서 객체가 필요하면 스프링이 컨테이너에서 꺼내서 전달해준다. 
+
+---
+
+# @Component를 포함하는 어노테이션
+
+- @Controller
+- @RestController
+- @Service: 비즈니스 로직을 처리하는 계층
+- @Repository: 데이터베이스 접근을 담당하는 계층
+
+BoardApplication에서 삭제한 실습 코드
+```
+Notifier notifier = context.getBean(Notifier.class);
+        notifier.send("컨테이너에서 직접 꺼낸 테스트 메시지입니다.");
+
+        try {
+            SmsNotifier smsNotifier = context.getBean(SmsNotifier.class);
+            smsNotifier.send("컨테이너에서 직접 꺼낸 테스트 메시지입니다.");
+        } catch (NoSuchBeanDefinitionException e) {
+            System.out.println("SmsNOtifier는 컨테이너에 없음: "+ e.getMessage());
+        }
+
+        System.out.println("등록된 Bean 개수: " + context.getBeanDefinitionNames().length);
+        System.out.println("emailNotifier 등록 여부: " + context.containsBean("emailNotifier"));
+        System.out.println("smsNotifier 등록 여부: " + context.containsBean("smsNotifier"));
+
+        System.out.println("OutsideComponent 등록 여부: " + context.containsBean("outsideComponent"));
+```
+
+Spring Bean은 Singleton!! 
+
+# 컴포넌트 스캔
+- @SpringBootApplication 어노테이션이 붙은 클래스가 위치한 패키지와 그 하위 패키지를 뒤져서 
+- @Component 계열 어노테이션이 붙은 클래스를 찾아서
+- 빈으로 등록하는 과정 
+
+# 스테레오타입 어노테이션
+- Component, Controller, Service, Repository
+- 내부에 @Component 어노테이션을 포함함
+- 컴포너트 스캔에 걸리면서, 이름으로 그 클래스의 역할까지 알려주는 어노테이션 
+
+# 싱글톤
+- 스프링 빈의 기본 스코프. 컨테이너 안에서 객체가 하나만 만들어져서 계속 재사용됨. 

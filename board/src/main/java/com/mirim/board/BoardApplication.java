@@ -16,19 +16,16 @@ public class BoardApplication {
         // 4. 요청을 받아서 요청이 오면 알맞는 코드로 넘겨준다.
 
         ApplicationContext context = SpringApplication.run(BoardApplication.class, args);
-        Notifier notifier = context.getBean(Notifier.class);
-        notifier.send("컨테이너에서 직접 꺼낸 테스트 메시지입니다.");
 
-        try {
-            SmsNotifier smsNotifier = context.getBean(SmsNotifier.class);
-            smsNotifier.send("컨테이너에서 직접 꺼낸 테스트 메시지입니다.");
-        } catch (NoSuchBeanDefinitionException e) {
-            System.out.println("SmsNOtifier는 컨테이너에 없음: "+ e.getMessage());
-        }
+        Notifier notifier1 = context.getBean(Notifier.class);
+        Notifier notifier2 = context.getBean(Notifier.class);
 
-        System.out.println("등록된 Bean 개수: " + context.getBeanDefinitionNames().length);
-        System.out.println("emailNotifier 등록 여부: " + context.containsBean("emailNotifier"));
-        System.out.println("smsNotifier 등록 여부: " + context.containsBean("smsNotifier"));
+        System.out.println("같은 객체인가? " + (notifier1 == notifier2));
+
+        Notifier direct1 = new EmailNotifier();
+        Notifier direct2 = new EmailNotifier();
+
+        System.out.println("직접 만들면 같은 객체인가? " + (direct1 == direct2));
     }
 
 }
