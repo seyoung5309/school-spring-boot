@@ -169,3 +169,46 @@ Spring Bean은 Singleton!!
 -> 메서드의 리턴 값이 HttpMessageConverter를 통해 JSON으로 변환됨
 -> 내장 Tomcat (톰캣)
 -> Response (응답)
+
+---
+
+# 9월 15일 주제
+
+> PostController의 일을 나누기.
+
+@Service, @Repository 어노테이션을 서서 일을 두 계층으로 나누기.
+
+## 왜?
+현재의 PostController
+- HTTP 요청 받기
+- 유효성 검사
+- 게시글 있는지 확인
+- 알림 보내기
+- (나중에) DB 연동
+
+=> 책임이 많다. 
+
+객체지향 프로그래밍에서 **하나의 클래스는 하나의 책임을 갖는다.**
+
+그래서 새로운 어노테이션을 사용해서 컨트롤러의 책임을 덜어줄 것이다. 
+
+# 계층형 아키텍처 (레이어드 아키텍처)
+
+Controller - Service - Repository 3개의 계층으로 나누는 프로그래밍 설계
+
+## Controller
+- @RestController라는 어노테이션을 붙인다. 
+- HTTP 요청을 받고 요청 형식이 올바른지 확인한다.
+- 알맞은 Service를 호출한다. 
+- 결과를 HTTP 응답으로 다시 포장한다. 
+
+## Service
+- @Service라는 어노테이션을 붙인다.
+- 업무 규칙, 비즈니스 로직을 처리한다. 
+  - 게시글이 존재하는지
+  - 등록이 되면 알림을 보내야 하는지 
+- 업무 규칙 비즈니스 로직: HTTP와 무관한 판단과 절차
+
+## Repository 
+- @Repository라는 어노테이션을 붙인다. 
+- 데이터베이스에 접근한다.

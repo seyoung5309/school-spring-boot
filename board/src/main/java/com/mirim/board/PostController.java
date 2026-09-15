@@ -1,5 +1,6 @@
 package com.mirim.board;
 
+import com.mirim.board.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +11,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/posts")
 public class PostController {
+    private final PostService postService;
     private final Notifier notifier;
 
-    public PostController(Notifier notifier) {
+    public PostController(PostService postService, Notifier notifier) {
+        this.postService = postService;
         this.notifier = notifier;
     }
 
@@ -37,20 +40,32 @@ public class PostController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPost(@PathVariable Long id) {
-        // 게시글 번호가 10번보다 크면 게시글이 존재 하지 않는다.
-        if (id > 10) {
-            // 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("존재하지 않는 게시글입니다.");
-//            ResponseEntity.notFound();
-        } else if (id <= 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("잘못된 요청입니다.");
-        } else {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(id + "번 게시글입니다.");
-        }
+        // 게시글 번호가 10번보다 크면 게시글이 존재 하지 않는다
+//        if (id > 10) {
+//            // 404
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body("존재하지 않는 게시글입니다.");
+////            ResponseEntity.notFound();
+//        } else if (id <= 0) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//                    .body("잘못된 요청입니다.");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.OK)
+//                    .body(id + "번 게시글입니다.");
+//        }
 //        return id + "번 게시글입니다";
+
+        Map<String, Object> post = postService.getPost(id);
+
+        if (id < 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("게시글 번호는 1 이상이어야 합니다.");
+        }
+
+        if (post == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 게시물입니다.");
+        }
+
+        return ResponseEntity.ok(post);
     }
 
     @GetMapping("/count")
