@@ -1,5 +1,6 @@
 package com.mirim.board;
 
+import com.mirim.board.repository.PostRepository;
 import com.mirim.board.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
