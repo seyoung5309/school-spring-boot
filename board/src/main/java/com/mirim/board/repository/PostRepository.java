@@ -1,16 +1,32 @@
 package com.mirim.board.repository;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
 public class PostRepository {
 
+    private final JdbcTemplate jdbcTemplate;
     private final List<Map<String, Object>> posts = new ArrayList<>();
     private Long nextId = 1L;
+
+    private final RowMapper<Map<String, Object>> postRowMapper = (rs, rowNum) -> {
+        Map<String, Object> post = new HashMap<>();
+        post.put("id", rs.getLong("id"));
+        post.put("title", rs.getString("title"));
+        post.put("content", rs.getString("content"));
+        return post;
+    };
+
+    public PostRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Map<String, Object> save(Map<String, Object> post) {
         post.put("id", nextId++);
@@ -23,6 +39,8 @@ public class PostRepository {
     }
 
     public List<Map<String, Object>> findAll() {
+        String sql = "SELECT * FROM posts";
+        jdbcTemplate.query(sql, postRowMapper);
         return posts;
     }
 
