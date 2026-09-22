@@ -1,0 +1,214 @@
+# REST API와 관련된 어노테이션은 무엇일까?
+
+## @RestController
+
+## @RequestMapping("/")
+
+## @GetMapping
+
+## @GetMapping("/")
+
+## @PostMapping
+
+---
+
+# 어떻게 주고 어떻게 받을까?
+
+## @PathVariable
+- url path 안에 있는 값을 변수로 읽기
+  - posts/**1**
+
+## @RequestParam
+- 쿼리 파라미터에 있는 값을 변수로 읽기 
+  - posts?keyword=스프링
+  - keyword는 메서드 안에서 받는 파라미터와 이름이 같아야 한다.
+
+## @RequestBody
+- request body에 있는 값 여러 개(json) 읽기
+```json
+  {"title" : "a" , "content" : "b"}
+```
+
+---
+
+# REST API
+
+여러 원칙 중 대표적인 2가지 
+
+## URI는 자원을 명사로 표현한다. 
+  - 무엇을 할 지는 URI에 포함하지 않는다. (명사형)
+
+
+## 자원에 대한 행위는 HTTP Method로 표현한다. 
+  - 무엇을 할 지는 HTTP Method로 표현한다. 
+
+---
+
+## HTTP Method
+- GET, POST, PUT, DELETE, (PATCH)
+
+# 200 OK 
+- 201 Created
+- 204 No Content 예) 게시글 삭제 
+
+# 스프링이 없으면 겪는 불편함
+- 순수 java로 HTTP 서버 만들기 
+- 컨트롤러에 멤버 변수 추가
+  - 메일/sms 알림 
+  - 강결합 <- 객체 지향에서는 지양해야 하는 방법
+
+---
+
+# 의존성
+한 객체가 동작하기 위해서 다른 객체가 필요한 경우 의존겅이이 있다고 한다.
+PostController는 Notifier에 의존한다.
+
+# IoC
+Inversion of Control = 제어의 역전
+PostController가
+- 내가 쓸 객체를 내자 정하고, 내가 만든다
+-> 결정과 생성을 외부(스프링)로 넘김
+스프링은
+- @Component 어노테이션으로 미리 알려주지 않으면 모른다고 하고 서버 실행을 포기한다. 
+
+# DI
+- 의존성 주입 (Dependency Injection)
+- @Component라는 어노테이션을 붙임으로써 스프링이 EmailNotifier 객체도 만들고 PostController 객체도 만들었다.
+  - PostController를 만들 때 필요한 Notifier 객체도 알아서 넣어줬다. (생성자)
+- 이 행동 자체를 필요한 의존성을 외부에서 넣어줬기 때문에 의존성을 외부에서 넣어줬다고 말한다. 
+
+# 정리
+- 의존성: 한 객체가 동작하기 위해 필요로 하는 다른 객체 
+- IOC: 제어의 역전. 의존성을 만들고 결정하는 주체가 객체 자신에서 외부로 바뀌는 것 
+- DI: 필요한 의존성을 외부에서 만들어서 넣어주는 것. IOC를 구현하는 대표적인 방법
+- 생성자 주입: 의존성 주입의 방식 중 하나. 생성자를 통해서 의존성을 주입하는 것 
+
+---
+
+우리가 한 것: PostController를 생성자 주입으로 바꾼 것
+우리가 알고 있는 것: EmailNotifier를 스프링이 알아서 만들었다. 
+우리가 아직 모르는 것: 
+1) 대체 언제 만들었지?
+2) 대체 어디에 보관해 뒀던 거지? 
+
+# 지금까지 배운 스프링 어플리케이션의 흐름
+1. 우리가 코드를 작성하면서 클래스에 @Component 어노테이션을 붙인다. 
+2. 애플리케이션이 실행될 때 스프링이 @Component 어노테이션이 붙은 클래스를 찾는다. 
+3. 다 찾아서 객체로 만든다. 
+4. 만든 객체를 컨테이너에 보관한다. 
+   - 이 컨테이너를 스프링 컨테이너(ApplicationContext)라고 한다. 
+5. 다른 곳에서 객체가 필요하면 스프링이 컨테이너에서 꺼내서 전달해준다. 
+
+---
+
+# @Component를 포함하는 어노테이션
+
+- @Controller
+- @RestController
+- @Service: 비즈니스 로직을 처리하는 계층
+- @Repository: 데이터베이스 접근을 담당하는 계층
+
+BoardApplication에서 삭제한 실습 코드
+```
+Notifier notifier = context.getBean(Notifier.class);
+        notifier.send("컨테이너에서 직접 꺼낸 테스트 메시지입니다.");
+
+        try {
+            SmsNotifier smsNotifier = context.getBean(SmsNotifier.class);
+            smsNotifier.send("컨테이너에서 직접 꺼낸 테스트 메시지입니다.");
+        } catch (NoSuchBeanDefinitionException e) {
+            System.out.println("SmsNOtifier는 컨테이너에 없음: "+ e.getMessage());
+        }
+
+        System.out.println("등록된 Bean 개수: " + context.getBeanDefinitionNames().length);
+        System.out.println("emailNotifier 등록 여부: " + context.containsBean("emailNotifier"));
+        System.out.println("smsNotifier 등록 여부: " + context.containsBean("smsNotifier"));
+
+        System.out.println("OutsideComponent 등록 여부: " + context.containsBean("outsideComponent"));
+```
+
+Spring Bean은 Singleton!! 
+
+# 컴포넌트 스캔
+- @SpringBootApplication 어노테이션이 붙은 클래스가 위치한 패키지와 그 하위 패키지를 뒤져서 
+- @Component 계열 어노테이션이 붙은 클래스를 찾아서
+- 빈으로 등록하는 과정 
+
+# 스테레오타입 어노테이션
+- Component, Controller, Service, Repository
+- 내부에 @Component 어노테이션을 포함함
+- 컴포너트 스캔에 걸리면서, 이름으로 그 클래스의 역할까지 알려주는 어노테이션 
+
+# 싱글톤
+- 스프링 빈의 기본 스코프. 컨테이너 안에서 객체가 하나만 만들어져서 계속 재사용됨. 
+
+# DispatcherServlet
+클라이언트로 요청이 들어오면 이 요청을 누가 처리해야할지 교통 정리를 해준다. 
+목적지: 컨트롤러
+
+# HttpMessageConverter
+- DispatcherServlet이 컨트롤러가 리턴한 값을 받으면
+- 그 값의 타임이랑, 요청 정보를 보고 알맞게 변환해준다. 
+- String -> text / Map -> JSON 
+
+---
+
+# 전체 흐름 정리
+
+- 메서드가 ResponseEntity를 리턴하면
+- 그 값이 DispatcherServlet으로 돌아가고 
+- @ResponseBody 어노테이션 덕분에 view를 찾지 않고 
+- HttpMessageConverter가 그 값을 json으로 바꿔서 
+- Response Body에 담는다. 
+
+브라우저 -> 내장 톰캣 -> 교통 정리(dispatcherServlet) -> Controller.hello() -> 형식 변환 -> 응답
+
+브라우저/postman -> 내장 톰캣 -> dispatcherServlet 
+-> HandlerMapping이 만든 지도에서 메서드 찾기 
+-> Singleton Controller Bean Method Execute (싱글톤 컨트롤러 빈의 메서드 실행)
+-> 메서드의 리턴 값이 HttpMessageConverter를 통해 JSON으로 변환됨
+-> 내장 Tomcat (톰캣)
+-> Response (응답)
+
+---
+
+# 9월 15일 주제
+
+> PostController의 일을 나누기.
+
+@Service, @Repository 어노테이션을 서서 일을 두 계층으로 나누기.
+
+## 왜?
+현재의 PostController
+- HTTP 요청 받기
+- 유효성 검사
+- 게시글 있는지 확인
+- 알림 보내기
+- (나중에) DB 연동
+
+=> 책임이 많다. 
+
+객체지향 프로그래밍에서 **하나의 클래스는 하나의 책임을 갖는다.**
+
+그래서 새로운 어노테이션을 사용해서 컨트롤러의 책임을 덜어줄 것이다. 
+
+# 계층형 아키텍처 (레이어드 아키텍처)
+
+Controller - Service - Repository 3개의 계층으로 나누는 프로그래밍 설계
+
+## Controller
+- @RestController라는 어노테이션을 붙인다. 
+- HTTP 요청을 받고 요청 형식이 올바른지 확인한다.
+- 알맞은 Service를 호출한다. 
+- 결과를 HTTP 응답으로 다시 포장한다. 
+
+## Service
+- @Service라는 어노테이션을 붙인다.
+- 업무 규칙, 비즈니스 로직을 처리한다. 
+  - 게시글이 존재하는지
+  - 등록이 되면 알림을 보내야 하는지 
+- 업무 규칙 비즈니스 로직: HTTP와 무관한 판단과 절차
+
+## Repository 
+- @Repository라는 어노테이션을 붙인다. 
+- 데이터베이스에 접근한다.
