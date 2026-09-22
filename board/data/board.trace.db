@@ -1,0 +1,69 @@
+2026-09-22 18:24:50.496241+09:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "POSTS" not found (this database is empty); SQL statement:
+SELECT * FROM posts [42104-240]
+2026-09-22 18:39:56.918230+09:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table posts ([*]"; expected "identifier"; SQL statement:
+create table posts ( [42001-240]
+2026-09-22 18:40:23.980421+09:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table posts (\000d\000aid bigint auto_increment primary key\000d\000a[*]title varchar(200) not null,\000d\000acontent text\000d\000a)"; expected "HASH, CONSTRAINT, COMMENT, UNIQUE, NOT NULL, CHECK, REFERENCES, ,, )"; SQL statement:
+create table posts (
+id bigint auto_increment primary key
+title varchar(200) not null,
+content text
+) [42001-240]
+2026-09-22 18:40:28.423143+09:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table posts (\000d\000aid bigint auto_increment primary key\000d\000a[*]title varchar(200) not null,\000d\000acontent text\000d\000a)"; expected "HASH, CONSTRAINT, COMMENT, UNIQUE, NOT NULL, CHECK, REFERENCES, ,, )"; SQL statement:
+create table posts (
+id bigint auto_increment primary key
+title varchar(200) not null,
+content text
+) [42001-240]
+2026-09-22 18:40:58.585995+09:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table posts (\000d\000aid bigint auto_increment primary key\000d\000a[*]title varchar(200) not null,\000d\000acontent text\000d\000a)"; expected "HASH, CONSTRAINT, COMMENT, UNIQUE, NOT NULL, CHECK, REFERENCES, ,, )"; SQL statement:
+create table posts (
+id bigint auto_increment primary key
+title varchar(200) not null,
+content text
+) [42001-240]
+2026-09-22 18:41:38.030703+09:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table posts (\000d\000aid bigint auto_increment primary key\000d\000a[*]title varchar(200) not null,\000d\000acontent text\000d\000a)"; expected "HASH, CONSTRAINT, COMMENT, UNIQUE, NOT NULL, CHECK, REFERENCES, ,, )"; SQL statement:
+create table posts (
+id bigint auto_increment primary key
+title varchar(200) not null,
+content text
+) [42001-240]
+2026-09-22 18:41:39.236681+09:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table posts (\000d\000aid bigint auto_increment primary key\000d\000a[*]title varchar(200) not null,\000d\000acontent text\000d\000a)"; expected "HASH, CONSTRAINT, COMMENT, UNIQUE, NOT NULL, CHECK, REFERENCES, ,, )"; SQL statement:
+create table posts (
+id bigint auto_increment primary key
+title varchar(200) not null,
+content text
+) [42001-240]
+2026-09-22 18:41:39.827182+09:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table posts (\000d\000aid bigint auto_increment primary key\000d\000a[*]title varchar(200) not null,\000d\000acontent text\000d\000a)"; expected "HASH, CONSTRAINT, COMMENT, UNIQUE, NOT NULL, CHECK, REFERENCES, ,, )"; SQL statement:
+create table posts (
+id bigint auto_increment primary key
+title varchar(200) not null,
+content text
+) [42001-240]
+2026-09-22 18:41:40.020101+09:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table posts (\000d\000aid bigint auto_increment primary key\000d\000a[*]title varchar(200) not null,\000d\000acontent text\000d\000a)"; expected "HASH, CONSTRAINT, COMMENT, UNIQUE, NOT NULL, CHECK, REFERENCES, ,, )"; SQL statement:
+create table posts (
+id bigint auto_increment primary key
+title varchar(200) not null,
+content text
+) [42001-240]
+2026-09-22 18:41:40.205570+09:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table posts (\000d\000aid bigint auto_increment primary key\000d\000a[*]title varchar(200) not null,\000d\000acontent text\000d\000a)"; expected "HASH, CONSTRAINT, COMMENT, UNIQUE, NOT NULL, CHECK, REFERENCES, ,, )"; SQL statement:
+create table posts (
+id bigint auto_increment primary key
+title varchar(200) not null,
+content text
+) [42001-240]
+2026-09-22 18:46:24.466205+09:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "POSTS" already exists; SQL statement:
+CREATE TABLE posts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content TEXT
+) [42101-240]

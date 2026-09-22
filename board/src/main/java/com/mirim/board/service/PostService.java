@@ -32,6 +32,10 @@ public class PostService {
     public Post updatePost(String title, String content, Long id) {
         Post post = postRepository.findById(id).orElse(null);
 
+        if (post == null) {
+            return null;
+        }
+
         post.setTitle(title);
         post.setContent(content);
         postRepository.save(post);

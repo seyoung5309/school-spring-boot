@@ -52,21 +52,19 @@ public class PostController {
     }
 
     @PostMapping
-    public Post createPost(String title, String content) {
-        Post response = postService.createPost(title, content);
-
-        return response;
+    public ResponseEntity<Post> createPost(@RequestBody Post post) {
+        Post response = postService.createPost(post.getTitle(), post.getContent());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public Post updatePost(String title, String content, long id) {
+    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post post) {
+        Post response = postService.updatePost(post.getTitle(), post.getContent(), id);
 
-        Post response = postService.updatePost(title, content, id);
-        if(response == null) {
-            return response;
+        if (response == null) {
+            return ResponseEntity.notFound().build();
         }
-
-        return response;
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
