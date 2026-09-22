@@ -6,9 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
 @RequestMapping("/posts")
@@ -23,17 +22,17 @@ public class PostController {
     @GetMapping
     public ResponseEntity<?> getPosts(@RequestParam(required = false) String keyword) {
         if (keyword != null) {
-            List<Map<String, Object>> posts = postService.searchPosts(keyword);
+            List<Post> posts = postService.searchPosts(keyword);
             return ResponseEntity.ok(posts);
         }
-        List<Map<String, Object>> posts =postService.getAllPosts();
+        List<Post> posts =postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPost(@PathVariable Long id) {
 
-        Map<String, Object> post = postService.getPost(id);
+        Post post = postService.getPost(id);
 
         if (id < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("게시글 번호는 1 이상이어야 합니다.");
@@ -53,26 +52,21 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createPost(@RequestBody Map<String, Object> request) {
-        String title = (String) request.get("title");
-        String content = (String) request.get("content");
+    public Post createPost(String title, String content) {
+        Post response = postService.createPost(title, content);
 
-        Map<String, Object> response = postService.createPost(title, content);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return response;
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePost(@RequestBody Map<String, Object> request, @PathVariable Long id) {
-        String title = (String) request.get("title");
-        String content = (String) request.get("content");
+    public Post updatePost(String title, String content, long id) {
 
-        Map<String, Object> response = postService.updatePost(title, content, id);
+        Post response = postService.updatePost(title, content, id);
         if(response == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 게시물입니다.");
+            return response;
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return response;
     }
 
     @DeleteMapping("/{id}")

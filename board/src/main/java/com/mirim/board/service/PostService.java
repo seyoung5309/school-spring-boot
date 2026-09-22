@@ -1,13 +1,11 @@
 package com.mirim.board.service;
 
 import com.mirim.board.Notifier;
+import com.mirim.board.Post;
 import com.mirim.board.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PostService {
@@ -20,40 +18,38 @@ public class PostService {
         this.notifier = notifier;
     }
 
-    public Map<String, Object> getPost(Long id) {
-        return postRepository.findById(id);
+    public Post getPost(Long id) {
+        return postRepository.findById(id).orElse(null);
     }
 
-    public Map<String, Object> createPost(String title, String content) {
-        Map<String, Object> post = new HashMap<>();
-        post.put("title", title);
-        post.put("content", content);
+    public Post createPost(String title, String content) {
+        Post post = new Post(title, content);
+        postRepository.save(post);
 
-        Map<String, Object> savedPost = postRepository.save(post);
-
-        // post.put("message", "게시글이 등록되었습니다.");
-
-        notifier.send(title + "게시글이 등록되었습니다.");
-
-        return savedPost;
+        return post;
     }
 
-    public Map<String, Object> updatePost(String title, String content, Long id) {
-        Map<String, Object> post = postRepository.findById(id);
-        if (post == null) {
-            return null;
-        }
+    public Post updatePost(String title, String content, Long id) {
+        Post post = postRepository.findById(id).orElse(null);
 
-        post.put("title", title);
-        post.put("content", content);
+        post.setTitle(title);
+        post.setContent(content);
+        postRepository.save(post);
         return post;
     }
 
     public boolean deletePost(Long id) {
-        return postRepository.deleteById(id);
+        Post post = postRepository.findById(id).orElse(null);
+
+        if (post == null) {
+            return false;
+        }
+
+        postRepository.deleteById(id);
+        return true;
     }
 
-    public List<Map<String, Object>> getAllPosts() {
+    public List<Post> getAllPosts() {
         return postRepository.findAll();
     }
 
@@ -61,7 +57,7 @@ public class PostService {
         return postRepository.count();
     }
 
-    public List<Map<String, Object>> searchPosts(String keyword) {
-        return postRepository.findByKeyword(keyword);
+    public List<Post> searchPosts(String keyword) {
+        return postRepository.findByTitleContaining(keyword);
     }
 }

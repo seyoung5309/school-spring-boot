@@ -212,3 +212,28 @@ Controller - Service - Repository 3개의 계층으로 나누는 프로그래밍
 ## Repository 
 - @Repository라는 어노테이션을 붙인다. 
 - 데이터베이스에 접근한다.
+
+---
+
+# JPA
+
+Java Persistence API
+
+자바에서 ORM을 어덯게 쓸지 정하는 표준, 인터페이스 
+
+## ORM
+
+Object-Relational Mapping 
+
+객체 지향 프로그래밍에서의 객체와 관계형 데이터베이스의 테이블을 연결해주는 기술 
+
+## Hibernate 
+
+JPA 대표 구현체 
+
+## Spring Data JPA
+
+build.gradle에 추가한 의존성
+
+Spring Boot에서 JPA를 쉽게 쓸 수 잇도록 하는 편의 기능
+
