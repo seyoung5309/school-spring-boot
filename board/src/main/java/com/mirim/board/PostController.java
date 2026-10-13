@@ -1,5 +1,7 @@
 package com.mirim.board;
 
+import com.mirim.board.dto.PostRequest;
+import com.mirim.board.dto.PostResponse;
 import com.mirim.board.repository.PostRepository;
 import com.mirim.board.service.PostService;
 import org.springframework.http.HttpStatus;
@@ -22,17 +24,17 @@ public class PostController {
     @GetMapping
     public ResponseEntity<?> getPosts(@RequestParam(required = false) String keyword) {
         if (keyword != null) {
-            List<Post> posts = postService.searchPosts(keyword);
+            List<PostResponse> posts = postService.searchPosts(keyword);
             return ResponseEntity.ok(posts);
         }
-        List<Post> posts =postService.getAllPosts();
+        List<PostResponse> posts =postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPost(@PathVariable Long id) {
 
-        Post post = postService.getPost(id);
+        PostResponse post = postService.getPost(id);
 
         if (id < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("게시글 번호는 1 이상이어야 합니다.");
@@ -52,14 +54,21 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        Post response = postService.createPost(post.getTitle(), post.getContent());
+    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest request) {
+        String title = request.getTitle();
+        String content = request.getContent();
+
+        PostResponse response = postService.createPost(title, content);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post post) {
-        Post response = postService.updatePost(post.getTitle(), post.getContent(), id);
+    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id,
+                                                   @RequestBody PostRequest request) {
+        String title = request.getTitle();
+        String content = request.getContent();
+
+        PostResponse response = postService.updatePost(title, content, id);
 
         if (response == null) {
             return ResponseEntity.notFound().build();

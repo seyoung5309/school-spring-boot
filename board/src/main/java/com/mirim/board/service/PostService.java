@@ -2,9 +2,11 @@ package com.mirim.board.service;
 
 import com.mirim.board.Notifier;
 import com.mirim.board.Post;
+import com.mirim.board.dto.PostResponse;
 import com.mirim.board.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,18 +20,22 @@ public class PostService {
         this.notifier = notifier;
     }
 
-    public Post getPost(Long id) {
-        return postRepository.findById(id).orElse(null);
+    public PostResponse getPost(Long id) {
+        Post post = postRepository.findById(id).orElse(null);
+        if (post == null) {
+            return null;
+        }
+        return PostResponse.from(post);
     }
 
-    public Post createPost(String title, String content) {
+    public PostResponse createPost(String title, String content) {
         Post post = new Post(title, content);
         postRepository.save(post);
 
-        return post;
+        return PostResponse.from(post);
     }
 
-    public Post updatePost(String title, String content, Long id) {
+    public PostResponse updatePost(String title, String content, Long id) {
         Post post = postRepository.findById(id).orElse(null);
 
         if (post == null) {
@@ -39,7 +45,7 @@ public class PostService {
         post.setTitle(title);
         post.setContent(content);
         postRepository.save(post);
-        return post;
+        return PostResponse.from(post);
     }
 
     public boolean deletePost(Long id) {
@@ -53,15 +59,23 @@ public class PostService {
         return true;
     }
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<PostResponse> getAllPosts() {
+        return toResponses(postRepository.findAll());
     }
 
     public long getPostCount() {
         return postRepository.count();
     }
 
-    public List<Post> searchPosts(String keyword) {
-        return postRepository.findByTitleContaining(keyword);
+    public List<PostResponse> searchPosts(String keyword) {
+        return toResponses(postRepository.findByTitleContaining(keyword));
+    }
+
+    private List<PostResponse> toResponses(List<Post> posts) {
+        List<PostResponse> responses = new ArrayList<>();
+        for (Post post: posts) {
+            responses.add(PostResponse.from(post));
+        }
+        return responses;
     }
 }
