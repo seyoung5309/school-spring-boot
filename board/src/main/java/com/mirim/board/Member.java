@@ -13,7 +13,7 @@ public class Member {
     private Long id;
 
     @Column(name="login_id", nullable = false, unique = true, length = 50)
-    private String loingId;
+    private String loginId;
 
     @Column(nullable = false, length = 100)
     private String password;
@@ -29,7 +29,7 @@ public class Member {
     }
 
     public Member(String loingId, String password, String name) {
-        this.loingId = loingId;
+        this.loginId = loingId;
         this.password = password;
         this.name = name;
         this.createdAt = LocalDateTime.now();
@@ -40,7 +40,7 @@ public class Member {
     }
 
     public String getLoingId() {
-        return loingId;
+        return loginId;
     }
 
     public String getPassword() {

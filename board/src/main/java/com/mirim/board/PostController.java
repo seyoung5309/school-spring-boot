@@ -4,6 +4,7 @@ import com.mirim.board.dto.PostRequest;
 import com.mirim.board.dto.PostResponse;
 import com.mirim.board.repository.PostRepository;
 import com.mirim.board.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +55,7 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest request) {
+    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest request) {
         String title = request.getTitle();
         String content = request.getContent();
 
@@ -63,7 +64,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id,
+    public ResponseEntity<PostResponse> updatePost(@Valid @PathVariable Long id,
                                                    @RequestBody PostRequest request) {
         String title = request.getTitle();
         String content = request.getContent();
