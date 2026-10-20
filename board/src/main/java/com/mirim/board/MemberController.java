@@ -1,10 +1,14 @@
 package com.mirim.board;
 
 import com.mirim.board.dto.ApiErrorResponse;
+import com.mirim.board.dto.LoginRequest;
 import com.mirim.board.dto.MemberResponse;
 import com.mirim.board.dto.SignupRequest;
 import com.mirim.board.exception.ApiException;
+import com.mirim.board.login.SessionConst;
 import com.mirim.board.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +36,19 @@ public class MemberController {
         return ResponseEntity.ok(member);
     }
 
-    @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ApiErrorResponse> handleApiException(ApiException e) {
-        ApiErrorResponse body = new ApiErrorResponse(e.getStatus().value(), e.getMessage(), Map.of());
-        return ResponseEntity.status(e.getStatus()).body(body);
+    @PostMapping("/login")
+    public ResponseEntity<MemberResponse> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+        MemberResponse member = memberService.login(request);
+
+        // 사용자별 보관함.
+        HttpSession session = httpRequest.getSession();
+
+        // 로그인에 성공했으니 번호표 교체
+        httpRequest.changeSessionId();
+
+        // 사용자 PT 저장
+
+        session.setAttribute(SessionConst.LOGIN_MEMBER_ID, member.getId());
+        return ResponseEntity.ok(member);
     }
 }

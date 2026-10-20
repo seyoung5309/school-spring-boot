@@ -1,6 +1,7 @@
 package com.mirim.board.service;
 
 import com.mirim.board.Member;
+import com.mirim.board.dto.LoginRequest;
 import com.mirim.board.dto.MemberResponse;
 import com.mirim.board.dto.SignupRequest;
 import com.mirim.board.exception.ApiException;
@@ -35,6 +36,14 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElse(null);
         if (member == null) {
             throw new ApiException(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다.");
+        }
+        return MemberResponse.from(member);
+    }
+
+    public MemberResponse login(LoginRequest request) {
+        Member member = memberRepository.findByLoginId(request.getLoginId()).orElse(null);
+        if (member == null || !passwordEncoder.matches(request.getPassword(), member.getPassword()))  {
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다.");
         }
         return MemberResponse.from(member);
     }

@@ -2,6 +2,7 @@ package com.mirim.board;
 
 import com.mirim.board.dto.PostRequest;
 import com.mirim.board.dto.PostResponse;
+import com.mirim.board.exception.ApiException;
 import com.mirim.board.repository.PostRepository;
 import com.mirim.board.service.PostService;
 import jakarta.validation.Valid;
@@ -34,17 +35,7 @@ public class PostController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPost(@PathVariable Long id) {
-
         PostResponse post = postService.getPost(id);
-
-        if (id < 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("게시글 번호는 1 이상이어야 합니다.");
-        }
-
-        if (post == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 게시물입니다.");
-        }
-
         return ResponseEntity.ok(post);
     }
 
@@ -64,16 +55,12 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostResponse> updatePost(@Valid @PathVariable Long id,
-                                                   @RequestBody PostRequest request) {
+    public ResponseEntity<PostResponse> updatePost(@Valid @PathVariable Long id, @RequestBody PostRequest request) {
         String title = request.getTitle();
         String content = request.getContent();
 
         PostResponse response = postService.updatePost(title, content, id);
 
-        if (response == null) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(response);
     }
 
