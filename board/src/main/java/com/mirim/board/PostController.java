@@ -3,6 +3,7 @@ package com.mirim.board;
 import com.mirim.board.dto.PostRequest;
 import com.mirim.board.dto.PostResponse;
 import com.mirim.board.exception.ApiException;
+import com.mirim.board.login.SessionConst;
 import com.mirim.board.repository.PostRepository;
 import com.mirim.board.service.PostService;
 import jakarta.validation.Valid;
@@ -46,11 +47,12 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest request) {
+    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest request,
+                                                   @SessionAttribute(name = SessionConst.LOGIN_MEMBER_ID) Long loginMemberId) {
         String title = request.getTitle();
         String content = request.getContent();
 
-        PostResponse response = postService.createPost(title, content);
+        PostResponse response = postService.createPost(title, content, loginMemberId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

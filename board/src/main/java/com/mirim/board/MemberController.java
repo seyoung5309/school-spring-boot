@@ -51,4 +51,21 @@ public class MemberController {
         session.setAttribute(SessionConst.LOGIN_MEMBER_ID, member.getId());
         return ResponseEntity.ok(member);
     }
+
+    @GetMapping("/members/me")
+    public ResponseEntity<MemberResponse> me(HttpSession session) {
+        Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER_ID);
+        MemberResponse response = memberService.getMember(memberId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
 }
