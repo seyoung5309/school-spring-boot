@@ -58,19 +58,19 @@ public class PostService {
         return PostResponse.from(post);
     }
 
-    public boolean deletePost(Long id) {
+    public void deletePost(Long id, Long loginMemberId) {
         Post post = postRepository.findById(id).orElse(null);
-
         if (post == null) {
-            return false;
+            throw new ApiException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
         }
-
-        postRepository.deleteById(id);
-        return true;
+        if (!post.getAuthor().getId().equals(loginMemberId)) {
+            throw new ApiException(HttpStatus.FORBIDDEN, "본인이 작성한 게시글만 삭제할 수 있습니다.");
+        }
+        postRepository.delete(post);
     }
 
     public List<PostResponse> getAllPosts() {
-        return toResponses(postRepository.findAll());
+        return toResponses(postRepository.findAllWithAuthor());
     }
 
     public long getPostCount() {

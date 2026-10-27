@@ -1,10 +1,8 @@
-package com.mirim.board;
+package com.mirim.board.controller;
 
 import com.mirim.board.dto.PostRequest;
 import com.mirim.board.dto.PostResponse;
-import com.mirim.board.exception.ApiException;
 import com.mirim.board.login.SessionConst;
-import com.mirim.board.repository.PostRepository;
 import com.mirim.board.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -67,22 +65,9 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable long id) {
-
-        if (id <= 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("게시글 번호는 1 이상이어야 합니다");
-        }
-        if (id > 10) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 게시물입니다.");
-        }
-
-        boolean deleted = postService.deletePost(id);
-
-        if (!deleted) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 게시물입니다.");
-        }
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-
+    public ResponseEntity<Void> deletePost(@PathVariable Long id,
+                                           @SessionAttribute(name = SessionConst.LOGIN_MEMBER_ID) Long loginMemberId) {
+        postService.deletePost(id, loginMemberId);
+        return ResponseEntity.noContent().build();
     }
 }

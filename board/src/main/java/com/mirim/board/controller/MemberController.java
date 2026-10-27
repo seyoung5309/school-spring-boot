@@ -1,10 +1,8 @@
-package com.mirim.board;
+package com.mirim.board.controller;
 
-import com.mirim.board.dto.ApiErrorResponse;
 import com.mirim.board.dto.LoginRequest;
 import com.mirim.board.dto.MemberResponse;
 import com.mirim.board.dto.SignupRequest;
-import com.mirim.board.exception.ApiException;
 import com.mirim.board.login.SessionConst;
 import com.mirim.board.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,8 +11,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 public class MemberController {
