@@ -9,6 +9,7 @@ import com.mirim.board.repository.MemberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -21,6 +22,7 @@ public class MemberService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public MemberResponse signup(SignupRequest request) {
         if (memberRepository.existsByLoginId(request.getLoginId())) {
             throw new ApiException(HttpStatus.CONFLICT, "이미 사용 중인 아이디입니다.");
