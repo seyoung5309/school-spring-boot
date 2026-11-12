@@ -95,9 +95,4 @@ public class PostService {
         }
         return responses;
     }
-
-    public int proxyTest() {
-        System.out.println("[안에서 본 this]" + this.getClass());
-        return getAllPosts().size();
-    }
 }
