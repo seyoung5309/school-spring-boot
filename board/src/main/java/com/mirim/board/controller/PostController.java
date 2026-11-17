@@ -5,6 +5,10 @@ import com.mirim.board.dto.PostResponse;
 import com.mirim.board.login.SessionConst;
 import com.mirim.board.service.PostService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +27,17 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getPosts(@RequestParam(required = false) String keyword) {
+    public ResponseEntity<?> getPosts(
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+
         if (keyword != null) {
             List<PostResponse> posts = postService.searchPosts(keyword);
             return ResponseEntity.ok(posts);
         }
-        List<PostResponse> posts =postService.getAllPosts();
+
+        Page<PostResponse> posts = postService.getAllPosts(pageable);
         return ResponseEntity.ok(posts);
     }
 

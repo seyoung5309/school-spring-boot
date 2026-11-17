@@ -3,7 +3,11 @@ my:
 
 spring:
   profiles:
-    active: prod
+    active: dev
+  data:
+    web:
+      pageable:
+        max-page-size: 50
   datasource:
     url: jdbc:h2:file:./data/board;AUTO_SERVER=TRUE
     username: sa
