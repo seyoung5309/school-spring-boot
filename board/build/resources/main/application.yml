@@ -2,23 +2,13 @@ my:
   message: this is hello message.
 
 spring:
+  profiles:
+    active: prod
   datasource:
     url: jdbc:h2:file:./data/board;AUTO_SERVER=TRUE
     username: sa
     password:
     driver-class-name: org.h2.Driver
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-
-#logging:
-    #  level:
-    #    org.springframework.web: DEBUG
