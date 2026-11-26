@@ -51,11 +51,15 @@ public class PostService {
         return PostResponse.from(post);
     }
 
-    public PostResponse updatePost(String title, String content, Long id) {
+    public PostResponse updatePost(String title, String content, Long id, Long loginMemberId) {
         Post post = postRepository.findById(id).orElse(null);
 
         if (post == null) {
             throw new ApiException(HttpStatus.NOT_FOUND, "존재하지 않는 게시글입니다.");
+        }
+
+        if (!post.getAuthor().getId().equals(loginMemberId)) {
+            throw new ApiException(HttpStatus.FORBIDDEN, "본인이 작성한 게시글만 수정할 수 있습니다.");
         }
 
         post.setTitle(title);
@@ -86,8 +90,8 @@ public class PostService {
         return postRepository.count();
     }
 
-    public List<PostResponse> searchPosts(String keyword) {
-        return toResponses(postRepository.findByTitleContaining(keyword));
+    public Page<PostResponse> searchPosts(String keyword, Pageable pageable) {
+        return postRepository.searchWithAuthor(keyword, pageable).map(PostResponse::from);
     }
 
     private List<PostResponse> toResponses(List<Post> posts) {
