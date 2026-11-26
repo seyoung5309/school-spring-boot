@@ -1,0 +1,12 @@
+spring:
+#  # 운영 DB가 따로 있을 떄 추가될 것
+#  datasource:
+#    url: jdbc:mysql://운영DB주소:3306/board
+#    username: board_app
+#    password: ${DB_PASSWORD}
+  h2:
+    console:
+      enabled: false
+
+
+

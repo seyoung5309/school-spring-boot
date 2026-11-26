@@ -1,0 +1,13 @@
+spring:
+  h2:
+    console:
+      enabled: true # 개발용
+      path: /h2-console
+    show-sql: true # 개발용
+    properties:
+      hibernate:
+        format_sql: true # 개발용
+
+#logging:
+  #  level:
+  #    org.springframework.web: DEBUG
